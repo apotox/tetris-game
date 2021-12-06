@@ -1,15 +1,14 @@
 {
   "name": "game",
   "version": "1.0.0",
-  "description": "",
+  "description": "a mini tetris javascript game",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack --watch",
     "build": "webpack"
   },
   "keywords": [],
-  "author": "",
+  "author": "safi eddine bouhentala <saphidev@gmail.com>",
   "license": "ISC",
   "devDependencies": {
     "jest": "^27.4.3",

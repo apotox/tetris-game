@@ -3,7 +3,7 @@ import pieces from './pieces';
 import { grid, highlightcolors } from "./constants";
 import Score from "./Score";
 
-const PLAY_INTERVAL = 100;
+const PLAY_INTERVAL = 400;
 const PAUSE_INTERVAL = 40;
 
 export default class GameEngine {

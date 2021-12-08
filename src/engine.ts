@@ -1,19 +1,15 @@
-import { gamePieceType, gameSystemType } from "./types";
+import { gamePieceType, GameStatus, gameSystemType } from "./types";
 import pieces from './pieces';
 import { grid, highlightcolors } from "./constants";
 import Score from "./Score";
 
-enum GameStatus {
-    init,
-    pause,
-    play,
-    gameOver
-}
+const PLAY_INTERVAL = 100;
+const PAUSE_INTERVAL = 40;
 
 export default class GameEngine {
     pieces: gamePieceType[] = []
     systems: gameSystemType[] = []
-    refresh: number = 400;
+    refresh: number = PAUSE_INTERVAL;
     refreshHandler: any = null;
 
     world: number[][] = []
@@ -30,6 +26,16 @@ export default class GameEngine {
 
     addSystem(system: gameSystemType) {
         this.systems.push(system)
+    }
+
+    configSystem(systemName: string, options){
+        const system = this.systems.find(s => s.name === systemName)
+        if(system){
+            system.options = {
+                ...system.options,
+                ...options
+            }
+        }
     }
 
     addPiece(piece: gamePieceType) {
@@ -76,12 +82,21 @@ export default class GameEngine {
         }
     }
 
+    updateRefreshTime(time: number) {
+        this.refresh = time
+        if(this.refreshHandler){
+            clearInterval(this.refreshHandler)
+        }
+        this.start()
+    }
+
 
     private update() {
         this.clearCanvas()
 
         if (this.status == GameStatus.gameOver) {
-
+            this.updateRefreshTime(PAUSE_INTERVAL)
+            this.configSystem("fixIt", { enabled: false })
             let ctx = this.game.canvas.getContext("2d") as CanvasRenderingContext2D;
             ctx.fillStyle = 'yellow'
             ctx.font = '14px tahoma';
@@ -96,12 +111,14 @@ export default class GameEngine {
 
 
         } else if (this.status == GameStatus.play) {
+            this.updateRefreshTime(PLAY_INTERVAL)
+            this.configSystem("fixIt", { enabled: true })
             this.pieces.forEach(piece => {
 
                 const effectedBy = piece.effectdBySystems || []
                 effectedBy.forEach(systemName => {
                     const system = this.systems.find(s => s.name === systemName)
-                    if (system) {
+                    if (system && system.options.enabled) {
                         system.effects.bind(this)(piece)
                     }
                 })
@@ -111,7 +128,8 @@ export default class GameEngine {
 
             this.score.redraw(this)
         }else if (this.status == GameStatus.pause) {
-
+            this.updateRefreshTime(PAUSE_INTERVAL)
+            this.configSystem("fixIt", { enabled: false })
             this.pieces.forEach(piece => {
                 piece.redraw(this)
 
@@ -128,22 +146,18 @@ export default class GameEngine {
     public createRandomPiece() {
         const piecesNames = Object.keys(pieces)
         const randomPieceName = piecesNames[Math.floor(Math.random() * piecesNames.length)]
-        const x = Math.floor(this.game.width / 2) - 1
-        console.log('randomPieceName', randomPieceName)
+        const x = this.status == GameStatus.pause ? Math.floor(Math.random() * this.game.width) : Math.floor(this.game.width / 2)
+        
         const randomPiece = pieces[randomPieceName]
         const randomPieceInstance = new randomPiece()
         randomPieceInstance.effectdBySystems = ['gravity', 'fixIt', 'addNewPiece', 'restartTheGame', 'keyboard']
         randomPieceInstance.x = x
         randomPieceInstance.y = 0
-        // add random string id
-        randomPieceInstance.id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
         return randomPieceInstance
     }
 
 
     public start() {
-        console.log('game started');
-
         this.refreshHandler = setInterval(this.update.bind(this), this.refresh)
     }
 }

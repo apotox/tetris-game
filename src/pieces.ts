@@ -7,6 +7,16 @@ class Piece{
     status = 0;
     rotate = 0;
 
+    constructor(){
+        this.id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+    }
+
+
+    flip(): void{
+        this.rotate = (this.rotate + 1) % this.templates.length;
+    }
+
+    templates = []
     template: () => number[][];
 
     get height() {
@@ -14,12 +24,6 @@ class Piece{
     }
     get width() {
         return this.template()[0].length;
-    }
-
-    moveLeft(engine) {
-        if (engine.canMove(-1, 0)) {
-            this.x--;
-        }
     }
 
     color = 'red';
@@ -38,36 +42,67 @@ class Piece{
 }
 
 class SPiece extends Piece implements sType {
+    constructor(){
+        super()
+    }
     color = 'blue';
     shape = 's';
     effectdBySystems = [];
-    template = () => this.rotate == 0 ? [
-        [1, 1, 0],
-        [0, 1, 1],
-    ]: [
-        [0, 1],
-        [1, 1],
-        [1, 0],
+    template = () => this.templates[this.rotate];
+
+    
+
+    templates = [
+        [
+            [1, 1, 0],
+            [0, 1, 1],
+        ],
+        [
+            [0, 1],
+            [1, 1],
+            [1, 0],
+        ]
     ]
 }
 
 class OPiece extends Piece implements sType {
+    constructor(){
+        super()
+    }
     color = '#FF1493';
     shape = 'o';
     effectdBySystems = [];
-    template = () => this.rotate == 0 ? [
-        [1, 1, 0],
-        [0, 1, 1],
-        [1, 1, 0],
-    ]: [
-        [0, 1 , 0],
-        [1, 1 , 1],
-        [1, 0 , 1],
+    template = () => this.templates[this.rotate]
+
+
+    templates = [
+        [
+            [1, 1, 0],
+            [0, 1, 1],
+            [1, 1, 0],
+        ],
+        [
+            [0, 1 , 0],
+            [1, 1 , 1],
+            [1, 0 , 1],
+        ],
+        [
+            [0, 1 , 1],
+            [1, 1 , 0],
+            [0, 1 , 1],
+        ],
+        [
+            [1, 0 , 1],
+            [1, 1 , 1],
+            [0, 1 , 0],
+        ]
     ]
 }
 
 class SquarePiece extends Piece implements squereType {
-    
+    constructor(){
+        super()
+    }
     color = 'yellow';
     shape = 'squere';
     effectdBySystems = [];
@@ -78,16 +113,22 @@ class SquarePiece extends Piece implements squereType {
 }
 
 class LinePiece extends Piece implements lineType {
+    constructor(){
+        super()
+    }
     color = 'red';
     shape = 'line';
     effectdBySystems = [];
-    template = () =>  this.rotate == 0 ? [
-        [1, 1, 1, 1]
-    ]: [
-        [1],
-        [1],
-        [1],
-        [1]
+    template = () =>  this.templates[this.rotate]
+
+    templates = [
+        [[1, 1, 1, 1]],
+        [
+            [1],
+            [1],
+            [1],
+            [1]
+        ]
     ]
 }
 

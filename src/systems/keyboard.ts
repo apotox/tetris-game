@@ -37,13 +37,16 @@ export default function (): gameSystemType {
     }
     const btnFlip = function(piece){
 
-        piece.rotate = piece.rotate == 0 ? 1 : 0
+        piece.flip()
 
     }
 
     return {
         name: "keyboard",
-        interval: 1000,
+        options: {
+            interval: 1000,
+            enabled: true
+        },
         effects: function (piece) {
             if (piece.status === 0 && lastEvent !== null) {
 

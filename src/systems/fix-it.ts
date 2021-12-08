@@ -1,11 +1,12 @@
-import { highlightcolors } from "../constants"
-import GameEngine from "../engine"
 import { gameSystemType } from "../types"
 
 export default function (): gameSystemType {
     return {
         name: "fixIt",
-        interval: 0,
+        options: {
+            interval: 1000,
+            enabled: true
+        },
         effects: function (piece) {
             try {
                 if (piece.status == 1) {

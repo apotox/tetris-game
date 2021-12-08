@@ -18,6 +18,8 @@ export type gamePieceType = pieceType & {
     effectdBySystems: string[]
     redraw: (engine: GameEngine) => void
     template: () => number[][]
+    flip: ()=> void
+    templates: number[][][]
 }
 
 export type squereType = gamePieceType & {}
@@ -28,6 +30,16 @@ export type sType = gamePieceType & {}
 
 export type gameSystemType = {
     name: string,
-    interval: number,
     effects: (gamePiece: gamePieceType) => void,
+    options: {
+        interval: number,
+        enabled: boolean
+    }
+}
+
+export enum GameStatus {
+    init,
+    pause,
+    play,
+    gameOver
 }

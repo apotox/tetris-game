@@ -4,4 +4,4 @@ simple javascript/ts tetris game
 - typescript
 - vanila javascript
 
-[Demo](https://tetris-game-rho.vercel.app/)
+[game demo](https://tetris-game-rho.vercel.app/)
